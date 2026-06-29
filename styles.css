@@ -1,0 +1,1324 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ════════════════════════════════════════════════════════
+   VARIABLES GLOBALES DEL PROYECTO
+   ----------------------------------------------------------------
+   Todas las variables se definen acá para mantener un diseño
+   consistente en todo el scrollytelling. 
+
+   Si queremos cambiar un color, una tipografía o un tamaño,
+   solo modificamos esta sección y el cambio se reflejará en
+   CASI (Todavia no pude modificar todo el archivo para que 
+   mantengamos el uso de estas variables) todas las pantallas.
+════════════════════════════════════════════════════════ */
+
+/* :root representa el elemento principal del documento (html).
+   Las variables definidas aquí pueden utilizarse desde cualquier
+   parte del CSS mediante la función var(--nombre-variable). */
+
+/* ════════════════════════════════════════════════════════
+   ¿CÓMO SE UTILIZAN LAS VARIABLES?
+   ----------------------------------------------------------------
+
+   En lugar de escribir directamente:
+
+       color: #F2F0EB;
+
+   utilizamos:
+
+       color: var(--blanco);
+
+   De esta forma, si en algún momento queremos cambiar el color
+   blanco del proyecto, solo modificamos la variable y todo el
+   sitio se actualiza automáticamente.
+
+   Lo mismo ocurre con las tipografías, tamaños y pesos.
+════════════════════════════════════════════════════════ */
+
+:root {
+
+    /* ========= COLORES ========= */
+
+    --negro:   #000000;
+    --blanco:  #F2F0EB;
+    --gris:    #8A8A8A;
+    --gris2:   #333333;
+    --acento:  #E63329;
+    --acento2: #F5A623;
+
+    /* ========= TIPOGRAFÍAS ========= */
+
+    /* Fuente utilizada en títulos y elementos principales */
+    --fuente-titulo: 'Montserrat', sans-serif;
+
+    /* Fuente utilizada en el cuerpo del texto */
+    --fuente-cuerpo: inherit;
+
+    /* Fuente utilizada para números, precios y estadísticas */
+    --fuente-descriptiva: 'Inter', sans-serif;
+
+    /* ========= PESOS DE LA TIPOGRAFIA ========= */
+
+    /* Mientras mayor es el número, más gruesa será la letra */
+    --peso-light: 300;
+    --peso-normal: 400;
+    --peso-bold: 700;
+    --peso-extrabold: 800;
+
+    /* ========= TAMAÑOS ========= */
+
+    /* Título principal del proyecto (solo aparece al inicio) */
+    --tam-titulo: clamp(4rem, 10vw, 8rem);
+
+    /* Texto que guía la narrativa del scrollytelling */
+    --tam-narrativo: clamp(1.4rem, 3.4vw, 2.4rem);     /* EL QUE ME GUSTA */
+
+    /* Texto descriptivo (explicaciones, ingredientes, etc.) */
+    --tam-texto: 1rem; /* como la descripción del mapa mundial o las opciones */
+
+    /* Etiquetas, notas, fuentes y aclaraciones */
+    --tam-etiqueta: 0.8rem; /*Opción A, Opción B, Fuente:, 1955*/
+
+    /* ========= ESPACIO ENTRE UNA LINEA Y LA SIG ========= */
+    --linea-titulo: 1;
+    --linea-narrativo: 1.6;
+}
+
+/* ════════════════════════════════════════════════════════
+   CLASES REUTILIZABLES
+   ----------------------------------------------------------------
+   Estas clases representan estilos que se repiten a lo largo del
+   proyecto.
+
+   La idea es evitar repetir el mismo código.
+
+    Ejemplo:
+
+    texto-narrativo
+    → todos los textos que cuentan la historia.
+
+    texto-descriptivo
+    → textos pequeños que explican un gráfico,
+    una tarjeta o una imagen.
+
+    enfasis
+    → palabras que queremos destacar dentro de un párrafo.
+
+   IMPORTANTE:
+   No reemplazan las clases existentes de cada sección.
+
+   Ejemplo:
+
+       <p class="precio-nota texto-narrativo">
+
+   "precio-nota" define el comportamiento específico de la sección.
+
+   "texto-narrativo" aporta la tipografía, tamaño y estilo
+   compartido con el resto del scrollytelling.
+════════════════════════════════════════════════════════ */
+
+.texto-narrativo {
+    font-family: var(--fuente-cuerpo);
+    font-size: var(--tam-narrativo);
+    font-weight: var(--peso-light);
+    color: var(--blanco);
+    line-height: var(--linea-narrativo);
+}
+
+.texto-descriptivo {
+    font-family: var(--fuente-descriptiva);
+    font-weight: var(--peso-light);
+    color: var(--blanco);
+    line-height: var(--linea-narrativo);
+}
+
+.enfasis {
+    color: var(--acento2);
+    font-weight: var(--peso-normal);
+}
+
+/* .subtitulo-intro span.dato {
+    color: var(--acento2); 
+    font-weight: 500; 
+} 
+*/
+
+html { scroll-behavior: auto; }
+
+body {
+    background: var(--negro);
+    color: var(--blanco);
+    font-family: inherit;
+    overflow-x: hidden;
+}
+
+.pantalla {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ══ INTRO — VIDEO DE APERTURA ══ */
+.intro-video-section {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background: #000;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.intro-video-el {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* recorta el video para llenar toda la pantalla sin bordes ni desplazamientos */
+    display: block;
+}
+
+.btn-saltar-intro {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 2;
+    background: transparent;
+    border: 2px solid rgba(242,240,235,0.45);
+    color: var(--blanco);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.80rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.65rem 1.3rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s, letter-spacing 0.25s;
+}
+.btn-saltar-intro:hover {
+    border-color: var(--acento2);
+    background: rgba(230,51,41,0.1);
+    letter-spacing: 0.24em;
+}
+.btn-saltar-intro.oculto {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+/* call to action de scroll — solo aparece cuando el video termina */
+.intro-scroll-cta {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.7s ease;
+}
+.intro-scroll-cta.visible {
+    opacity: 1;
+}
+.intro-scroll-cta span {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.70rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--blanco);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+}
+/* ══════════════════════════════════════
+    ACTO I
+══════════════════════════════════════ */
+
+/* P2 */
+#p2 { 
+    background: #000; 
+    min-height: 120vh; 
+}
+
+.subtitulo-intro {
+    text-align: center;
+    max-width: 800px;
+    opacity: 0;
+    transform: translateY(20px);
+    margin-top: 0;
+}
+.subtitulo-intro span.dato {
+    color: var(--acento2); 
+    font-weight: 500; 
+}
+
+.pausa-visual {
+    width: 80px;
+    height: 3px;
+    background: var(--acento2);
+    opacity: 0;
+    margin: 3rem auto 0;
+}
+
+/* P3 */
+#p3 { 
+    background: #000; 
+    min-height: 100vh; 
+}
+
+.pregunta-gigante {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 850;
+    opacity: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 0.9;
+    text-align: center;
+}
+
+.scroll-hint {
+    position: absolute;
+    bottom: 6%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gris);
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.scroll-flecha {
+    width: 5px;
+    height: 50px;
+    background: linear-gradient(to bottom, transparent, var(--acento2));
+    animation: bajar 1.5s ease-in-out infinite;
+}
+@keyframes bajar {
+    0%, 100% { transform: scaleY(0.4); opacity: 0.4; }
+    50%       { transform: scaleY(1);   opacity: 1; }
+}
+
+/* ══════════════════════════════════════
+    ACA IBA EL PLACEHOLDER DEL MAPA MUNDIAL
+══════════════════════════════════════ */
+/* ══════════════════════════════════════
+    ACTO II — MAPA MUNDIAL
+══════════════════════════════════════ */
+
+.mapa-eyebrow {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(12px);
+    max-width: 1000px;
+}
+.mapa-leyenda {
+    font-size: clamp(1.05rem, 2.6vw, 1.45rem);
+    letter-spacing: 0.15em;
+    text-align: center;
+    opacity: 0;
+}
+/* países del mapa (paths) */
+.pais-path {
+    fill: #505050;
+    stroke: #2a2a2a;
+    stroke-width: 0.7;
+    transition: fill 0.3s;
+}
+/* burbujas */
+.burbuja {
+    fill: var(--acento2);
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.burbuja:hover { opacity: 1 !important; }
+/* EE.UU. siempre destacado, color distinto */
+.burbuja-usa {
+    fill: var(--acento);
+}
+.burbuja-label, .burbuja-label-pais {
+    pointer-events: none;
+}
+
+/* ══════════════════════════════════════
+    ACTO III — RELOJ
+══════════════════════════════════════ */
+#p8 { background: #000; min-height: 140vh; }
+
+.reloj-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+.reloj-digital {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(5rem, 18vw, 13rem);
+    color: var(--blanco);
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transform: translateY(20px);
+    /* parpadeo sutil de dígitos */
+    text-shadow: 0 0 40px rgba(242,240,235,0.08);
+}
+
+.reloj-frase {
+    text-align: center;
+    max-width: 520px;
+    opacity: 0;
+    transform: translateY(15px);
+}
+
+/* ══════════════════════════════════════
+    ACTO III — PRECIO 
+══════════════════════════════════════ */
+#p9 { background: #000; min-height: 120vh; }
+
+.precio-titulo {
+    margin-bottom: 3rem;
+    opacity: 0;
+}
+
+/* .precio-nota {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 300;
+    color: var(--gris);
+    text-align: center;
+    max-width: 520px;
+    line-height: 1.7;
+    opacity: 0;
+    transform: translateY(100px);
+} */
+
+.precio-comparativa {
+    display: flex;
+    gap: clamp(1.5rem, 5vw, 4rem);
+    align-items: stretch;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Encabezado fuera de la tarjeta*/
+.precio-columna {
+    width: clamp(260px, 35vw, 340px);
+    opacity: 0;
+    transform: translateY(25px);
+}
+
+.precio-encabezado {
+    margin-bottom: 1rem;
+}
+
+.precio-opcion {
+    display: block;
+
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--gris);
+    margin-bottom: 0.4rem;
+}
+
+.precio-encabezado h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    color: var(--blanco);
+}
+
+/* Tarjeta*/
+.precio-card {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+}
+
+/* Imagen*/
+.precio-imagen {
+    width: 100%;
+    height: 240px;
+
+    object-fit: cover;
+    display: block;
+}
+
+/* Información de las comidas*/
+.precio-info {
+    padding: 1.5rem;
+
+    color: var(--gris);
+    line-height: 1.7;
+}
+
+/* Precio de las comidas*/
+.precio-card-valor {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 4rem;
+    padding: 0 1.5rem 1.5rem;
+    color: var(--blanco);
+}
+
+.destacado .precio-card-valor {
+    color: var(--acento2);
+}
+
+.precio-nota {
+    text-align: center;
+    max-width: 800px;
+    opacity: 0;
+    transform: translateY(100px);
+}
+
+
+/* ══════════════════════════════════════
+    ACTO III — LA DECISIÓN (interactivo)
+══════════════════════════════════════ */
+#p-decision {
+    background: #000;
+    position: relative;
+}
+
+.decision-contenedor {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-height: 65vh;
+}
+
+.decision-eyebrow {
+    font-family: var(--fuente-titulo);
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--blanco);
+    margin-bottom: 3rem;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+.decision-eyebrow.visible { opacity: 1; }
+
+.decision-situacion {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+
+    opacity: 0;
+    transform: translateY(14px);
+    transition: all 0.5s ease;
+    margin-bottom: 6rem;
+    position: relative;
+}
+
+.decision-situacion.activa {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+.decision-situacion.saliendo {
+    opacity: 1;
+    transform: translateY(-14px);
+    position: absolute;
+}
+
+.decision-situacion.completada::after {
+    content: "";
+    width: 3px;
+    height: 0;
+    background: var(--acento2);
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+
+    animation: crecerLinea 0.6s ease forwards;
+}
+
+@keyframes crecerLinea {
+    from {
+        height: 0;
+    }
+    to {
+        height: 60px;
+    }
+}
+
+.decision-texto {
+    font-size: clamp(1.05rem, 2.6vw, 1.45rem);
+    max-width: 560px;
+    margin-bottom: 1rem; /*añade espacio hacia abajo*/
+}
+
+.decision-opciones {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+.decision-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--blanco);
+    background: #0a0a0a;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 1rem 1.8rem;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s, transform 0.15s;
+    min-width: 200px;
+}
+.decision-btn:hover {
+    transform: translateY(-2px);
+    border-color: #555;
+}
+
+.decision-btn:disabled {
+    opacity: 0.85;
+    cursor: default;
+    transform: none;
+}
+
+.decision-btn.seleccionada {
+    background: var(--acento2);
+    color: #000;
+    border-color: var(--acento2);
+    font-weight: 700;
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(255, 213, 74, 0.4);
+}
+
+/* feedback breve tras elegir — altura reservada para que no empuje ni superponga el resto */
+.decision-feedback {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: var(--gris);
+    text-align: center;
+    opacity: 0;
+    max-width: 480px;
+    min-height: 2.6rem;
+    line-height: 1.6;
+    margin-top: 0.4rem;
+    transition: opacity 0.4s ease;
+}
+.decision-feedback.visible { opacity: 1; }
+
+/* transición final */
+.decision-transicion {
+    position: absolute;
+    top: 4.5rem;
+    left: 0;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.6rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(14px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.decision-transicion.activa {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    position: relative;
+    display: flex;
+}
+
+.decision-transicion-texto {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.15rem, 3vw, 1.7rem);
+    font-weight: 700;
+    color: var(--blanco);
+    text-align: center;
+    line-height: 1.55;
+    max-width: 600px;
+}
+.decision-transicion-texto span { color: var(--acento2); }
+
+.decision-transicion-sub {
+    font-size: clamp(0.9rem, 2vw, 1.05rem);
+    font-weight: 300;
+    color: var(--gris);
+    text-align: center;
+    max-width: 520px;
+    line-height: 1.75;
+}
+
+@media (max-width: 600px) {
+    .decision-opciones { flex-direction: column; align-items: stretch; }
+    .decision-btn { width: 100%; }
+}
+
+/* ══════════════════════════════════════
+    ACTO IV — EXPANSIÓN (sticky scrollytelling)
+══════════════════════════════════════ */
+
+.expansion-section {
+    position: relative;
+    background: #000;
+}
+
+/* el wrapper queda pegado (sticky) ocupando toda la pantalla
+    mientras el espaciador de abajo se va recorriendo con el scroll */
+.expansion-sticky-wrap {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+    overflow: hidden;
+}
+
+/* este div no tiene contenido visual: solo le da "longitud" al scroll.
+    su altura determina cuánto hay que scrollear para recorrer las 5 etapas */
+.expansion-scroll-espaciador {
+    height: 400vh; /* 5 etapas → ~80vh de scroll por etapa */
+    width: 100%;
+}
+
+.expansion-mapa-contenedor {
+    width: 100%;
+    max-width: 620px;
+    position: relative;
+}
+.expansion-mapa-contenedor svg {
+    width: 100%;
+    display: block;
+}
+
+.expansion-contador {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+    color: var(--acento2);
+    letter-spacing: 0.05em;
+    background: rgba(0,0,0,0.55);
+    padding: 0.3rem 0.7rem;
+    border-radius: 3px;
+}
+
+/* zona completa: mapa al centro, tarjetas flotando a los costados */
+.expansion-escenario {
+    position: relative;
+    width: 100%;
+    max-width: 1180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* el recorrido vertical de las tarjetas necesita el alto COMPLETO
+    de la pantalla, no solo el alto del mapa — por eso se ancla a
+    .expansion-sticky-wrap (100vh) en vez de a .expansion-escenario */
+.expansion-tarjeta-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* tarjeta tipo "card" flotante.
+    3 estados controlados por scroll, con recorrido COMPLETO de la pantalla:
+    pendiente (nace fuera de pantalla, abajo) →
+    activa (centrada, de paso) →
+    salida (sale fuera de pantalla, arriba) */
+.expansion-tarjeta {
+    position: absolute;
+    width: min(300px, 78vw);
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1.6rem 1.7rem;
+    background: rgba(10,10,10,0.88);
+    border: 1px solid #232323;
+    border-radius: 8px;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    text-align: left;
+    transition: opacity 0.45s ease, top 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* estado de espera: nace completamente fuera de pantalla, por abajo */
+.expansion-tarjeta.pendiente {
+    top: 115%;
+    opacity: 0;
+}
+
+/* estado activo: cruzando el centro de la pantalla, totalmente visible */
+.expansion-tarjeta.activa {
+    top: 50%;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%);
+}
+
+/* estado de salida: sale completamente fuera de pantalla, por arriba */
+.expansion-tarjeta.salida {
+    top: -25%;
+    opacity: 0;
+}
+
+.expansion-tarjeta.pendiente,
+.expansion-tarjeta.salida {
+    transform: translateY(0);
+}
+
+/* posición horizontal: impares a la derecha, pares a la izquierda */
+/* posicionadas a partir del centro de pantalla, dejando lugar al mapa (max 620px) */
+.expansion-tarjeta.lado-derecha { left: calc(50% + 330px); }
+.expansion-tarjeta.lado-izquierda { right: calc(50% + 330px); }
+
+.expansion-tarjeta-decada {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--acento);
+}
+
+.expansion-tarjeta p {
+    font-size: clamp(0.85rem, 1.7vw, 0.98rem);
+    font-weight: 300;
+    color: var(--blanco);
+    line-height: 1.6;
+}
+
+.expansion-progreso {
+    display: flex;
+    gap: 0.5rem;
+}
+.expansion-paso-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2a2a2a;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+.expansion-paso-dot.activo {
+    background: var(--acento);
+    transform: scale(1.4);
+}
+
+.punto-local {
+    fill: var(--acento);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+.pais-usa {
+    fill: #505050;
+    stroke: #2a2a2a;
+    stroke-width: 0.7;
+    transition: fill 0.3s;
+}
+
+/* ══ TRANSICIÓN FINAL POST-EXPANSIÓN ══ */
+#p-expansion-cierre {
+    background: #000;
+    min-height: 80vh;
+}
+.expansion-cierre-texto {
+    text-align: center;
+    max-width: 720px;
+    opacity: 0;
+    transform: translateY(16px);
+}
+
+@media (max-width: 640px) {
+    .expansion-scroll-espaciador { height: 500vh; }
+    .expansion-sticky-wrap { gap: 1rem; padding: 1.2rem 0.8rem; }
+    .expansion-mapa-contenedor { max-width: 90vw; }
+
+    /* en mobile no hay espacio a los costados: todas las tarjetas
+        quedan centradas horizontalmente, mismo recorrido vertical completo */
+    .expansion-tarjeta {
+    width: min(320px, 90vw);
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    }
+    .expansion-tarjeta.activa {
+    transform: translateX(-50%) translateY(-50%);
+    }
+}
+
+/* ══════════════════════════════════════
+    ACTO V — LAS MARCAS DEL DÍA A DÍA
+══════════════════════════════════════ */
+.franq-intro {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-weight: 300;
+    color: var(--gris);
+    text-align: center;
+    max-width: 640px;
+    line-height: 1.75;
+    opacity: 0;
+    transform: translateY(16px);
+}
+.franq-intro span { color: var(--blanco); font-weight: 500; }
+
+.franq-subtitulo {
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #444;
+    opacity: 0;
+}
+
+.franq-tarjetas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.franq-card {
+    background: #0a0a0a;
+    border: 1px solid #1e1e1e;
+    border-radius: 6px;
+    padding: 2rem 1.5rem;
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    transition: border-color 0.25s, transform 0.2s, background 0.25s;
+    font-family: inherit;
+    color: var(--blanco);
+}
+.franq-card-activa {
+    border-color: var(--acento);
+    background: rgba(230,51,41,0.06);
+}
+.franq-card-proximamente {
+    opacity: 0.4;
+}
+.franq-card-proximamente .franq-nombre::after {
+    content: "Próximamente";
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #555;
+    margin-top: 0.3rem;
+}
+.franq-emoji  { font-size: 2rem; }
+.franq-nombre { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em; }
+
+/* ══════════════════════════════════════
+    ACTO VI — UN COMBO, POR DENTRO (sticky scrollytelling)
+══════════════════════════════════════ */
+
+.combo-section {
+    position: relative;
+    background: #000;
+}
+
+.combo-sticky-wrap {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* 7 escenas × ~90vh de scroll cada una */
+.combo-scroll-espaciador {
+    height: 630vh;
+    width: 100%;
+}
+
+/* ── composición visual: las 3 fotos superpuestas, como una bandeja ──
+    ahora ocupa la franja superior de la pantalla (0% a 72%), dejando
+    el 28% inferior reservado para el texto, sin depender de flex
+    centering que generaba espacio negro arriba */
+.combo-visual {
+    position: absolute;
+    top: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(92vw, 560px);
+    height: 68%;
+}
+
+.combo-img {
+    position: absolute;
+    /* mismo alto máximo para las 3 fotos, así no importa la resolución
+        o proporción original de cada archivo: todas se ven a escala
+        comparable. object-fit:contain evita que se recorten o deformen. */
+    max-height: 42%;
+    max-width: 46%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: opacity 0.6s ease, filter 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: brightness(0.45) saturate(0.7);
+    opacity: 0;
+}
+
+/* posiciones relativas dentro del "combo": hamburguesa al centro,
+    papas a la izquierda, bebida a la derecha — como una bandeja.
+    Las 3 se anclan por su CENTRO geométrico (top/left + translate),
+    así si el archivo de imagen tiene espacio vacío alrededor del
+    producto, igual queda alineado visualmente con los demás. */
+.combo-img-hamburguesa {
+    max-height: 48%;
+    max-width: 56%;
+    left: 50%;
+    top: 52%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 3;
+}
+.combo-img-papas {
+    left: 22%;
+    top: 62%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 2;
+}
+.combo-img-bebida {
+    left: 80%;
+    top: 62%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 2;
+}
+
+/* estado "presente, visible normal" — todo el combo a la vista (escena 1, 5, 6, 7) */
+.combo-img.combo-visible {
+    opacity: 1;
+    filter: brightness(0.85) saturate(0.95);
+}
+
+/* estado "destacado" — el elemento protagonista de su escena */
+.combo-img.combo-destacado {
+    opacity: 1;
+    filter: brightness(1.05) saturate(1.1) drop-shadow(0 8px 30px rgba(0,0,0,0.6));
+    transform: translate(-50%, -50%) scale(1.18);
+}
+.combo-img-hamburguesa.combo-destacado { transform: translate(-50%, -50%) scale(1.12); }
+
+/* estado "atenuado" — sigue presente pero no es el protagonista */
+.combo-img.combo-atenuado {
+    opacity: 1;
+    filter: brightness(0.35) saturate(0.5) blur(0.5px);
+}
+
+/* estado "juntándose" — las 3 fotos sueltas se acercan al centro y se
+    achican levemente, justo antes de dar paso a la foto unificada */
+.combo-img.combo-juntandose {
+    opacity: 1;
+    filter: brightness(0.7) saturate(0.85);
+}
+.combo-img-hamburguesa.combo-juntandose {
+    transform: translate(-50%, -50%) scale(0.82);
+}
+.combo-img-papas.combo-juntandose {
+    left: 38%;
+    transform: translate(-50%, -50%) scale(0.7);
+}
+.combo-img-bebida.combo-juntandose {
+    left: 64%;
+    transform: translate(-50%, -50%) scale(0.7);
+}
+
+/* estado "desaparecida" — una vez que ya se unieron, las 3 fotos
+    sueltas se desvanecen del todo para dar lugar a la foto unificada */
+.combo-img.combo-oculta {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+}
+
+/* ── foto del combo ya unificado/armado — reemplaza a las 3 sueltas
+    en la escena del total y se mantiene durante el resto del recorrido ── */
+.combo-img-unificado {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    max-height: 58%;
+    max-width: 78%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+    filter: brightness(0.85) saturate(0.95);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+    pointer-events: none;
+    z-index: 4;
+}
+.combo-img-unificado.combo-unificado-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* flechas que señalan hacia ABAJO, desde el producto hacia el texto
+    con las calorías (que vive en .combo-texto-capa, anclado abajo) */
+.combo-flecha {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 5;
+    pointer-events: none;
+}
+.combo-flecha.visible { opacity: 1; }
+
+/* posicionadas justo debajo de cada producto, apuntando hacia abajo
+    (hacia donde está el texto de calorías) */
+#flechaHamburguesa { left: 50%; top: 84%;  transform: translateX(-50%) rotate(180deg); }
+#flechaPapas        { left: 22%; top: 90%; transform: translateX(-50%) rotate(180deg); }
+#flechaBebida        { left: 80%; top: 90%; transform: translateX(-50%) rotate(180deg); }
+
+/* ── capa de texto: ocupa la franja inferior reservada (28% de abajo),
+    cada escena hace cross-fade dentro de esa misma franja ── */
+.combo-texto-capa {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.combo-escena {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    text-align: center;
+    width: 100%;
+    padding: 0 1.5rem;
+}
+.combo-escena.activa {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.combo-escena-texto {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.3rem, 3.2vw, 2rem);
+    font-weight: 700;
+    color: var(--blanco);
+}
+
+.combo-escena-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--acento);
+    font-weight: 700;
+}
+
+.combo-escena-cifra {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 3.4rem);
+    font-weight: 800;
+    color: var(--blanco);
+    line-height: 1;
+}
+.combo-escena-cifra span {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.85rem, 1.6vw, 1rem);
+    font-weight: 300;
+    color: var(--gris);
+    margin-left: 0.4rem;
+}
+
+/* escena 5: el total, mucho más grande e impactante */
+.combo-escena-cifra-total {
+    font-size: clamp(3.5rem, 11vw, 7rem);
+    color: var(--acento);
+}
+
+.combo-escena-contexto {
+    font-size: clamp(1rem, 2.4vw, 1.3rem);
+    font-weight: 300;
+    color: var(--blanco);
+    max-width: 540px;
+    line-height: 1.7;
+}
+.combo-escena-contexto span {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    color: var(--acento2);
+    font-size: 1.3em;
+}
+
+/* escena 7: equivalencia visual con km caminados para quemar el combo */
+.combo-escena-equivalencia {
+    gap: 0.9rem;
+}
+.combo-escena-equivalencia-titulo {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gris);
+}
+
+.km-cifra-grande {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.6rem, 7vw, 4.2rem);
+    color: var(--acento2);
+    line-height: 1;
+}
+
+/* "ruta" horizontal: una línea que se va completando y un caminante
+    que avanza sobre ella, a medida que se hace scroll dentro de la escena */
+.km-ruta-barra {
+    position: relative;
+    width: min(380px, 80vw);
+    height: 4px;
+    background: #1c1c1c;
+    border-radius: 2px;
+    margin-top: 0.4rem;
+}
+.km-ruta-progreso {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: var(--acento);
+    border-radius: 2px;
+    transition: width 0.1s linear;
+}
+.km-ruta-icono {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    transition: left 0.1s linear;
+}
+
+.combo-escena-equivalencia-sub {
+    font-size: 0.85rem;
+    color: var(--gris);
+    font-weight: 300;
+}
+.combo-escena-equivalencia-sub span {
+    color: var(--blanco);
+    font-weight: 600;
+    font-family: 'Syne', sans-serif;
+}
+
+@media (max-width: 640px) {
+    .combo-scroll-espaciador { height: 700vh; }
+    .combo-visual { height: 62%; top: 3%; }
+    .combo-texto-capa { height: 35%; }
+}
+
+/* ══════════════════════════════════════
+    ACTO VII — CIERRE
+══════════════════════════════════════ */
+#p-cierre {
+    background: #000;
+    padding: 15vh 2rem 20vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cierre-lista {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+    max-width: 800px;
+    width: 100%;
+}
+
+.cierre-frase {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: var(--blanco);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(24px);
+}
+
+.cierre-separador {
+    width: 40px;
+    height: 1px;
+    background: var(--acento);
+    opacity: 0;
+}
+
+.pregunta-final {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.2rem, 3.5vw, 2.2rem);
+    font-weight: 700;
+    color: var(--blanco);
+    text-align: center;
+    max-width: 800px;
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateY(24px);
+}
+
+.reflexion-final {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    font-weight: 300;
+    color: var(--gris);
+    text-align: center;
+    max-width: 560px;
+    line-height: 1.85;
+    opacity: 0;
+    transform: translateY(24px);
+}
+.reflexion-final span { color: var(--blanco); font-weight: 400; }
+
+.cierre-firma {
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #333;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(16px);
+}

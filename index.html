@@ -1,0 +1,595 @@
+<!--
+═══════════════════════════════════════════════════════════════
+  ESTRUCTURA GENERAL DEL PROYECTO
+  ---------------------------------------------------------------
+  Este proyecto está dividido en ACTOS.
+
+  Cada <section> representa una pantalla o una etapa del
+  scrollytelling.
+
+  Generalmente cada acto posee:
+
+  • un id único (ej: #p8)
+  • sus propios estilos en CSS
+  • sus propias animaciones en JS
+
+  Esto permite trabajar cada sección de forma independiente.
+═══════════════════════════════════════════════════════════════
+-->
+
+<!--
+  IMPORTANTE
+
+  id="..."
+  → Identifica un único elemento de la página.
+  → Se usa principalmente para animaciones con JavaScript.
+  Los id utilizados por JavaScript no deben modificarse, ya que las animaciones dependen de ellos.
+
+  Ejemplo:
+  id="card1"
+  id="precioTitulo"
+  id="reloj"
+
+  Si se cambia alguno de estos nombres, las animaciones dejarán de funcionar.
+
+  class="..."
+  → Se utiliza para aplicar estilos.
+  → Un mismo elemento puede tener varias clases.
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El entorno que nos alimenta</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="intro-activa">
+
+  <!-- ══════════════════════════════════════
+       INTRO — VIDEO DE APERTURA
+  ══════════════════════════════════════ -->
+  <section id="intro-video" class="intro-video-section">
+    <video
+      id="videoIntro"
+      class="intro-video-el"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+    >
+      <source src="video-intro.mp4" type="video/mp4">
+    </video>
+ 
+    <button id="btnSaltarIntro" class="btn-saltar-intro" onclick="saltarIntro()">
+      Saltar intro →
+    </button>
+
+    <div class="intro-scroll-cta" id="introScrollCta">
+      <span>Scrolleá para empezar</span>
+      <div class="scroll-flecha"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ACTO I — LA PREGUNTA
+  ══════════════════════════════════════ -->
+
+  <section class="pantalla" id="p2">
+    <p class="subtitulo-intro texto-narrativo" id="subIntro">
+      Investigamos el entorno alimentario en Estados Unidos.<br />
+      Y descubrimos que el país posee
+      <span class="dato texto-narrativo">uno de los índices de obesidad más altos del mundo.</span>
+    </p>
+    <div class="pausa-visual" id="pausaVisual"></div>
+  </section>
+
+  <section class="pantalla" id="p3">
+    <p class="pregunta-gigante" id="pregunta">¿Por qué?</p>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ACTO II — MAPA MUNDIAL
+  ══════════════════════════════════════ -->
+
+  <section class="pantalla" id="p-mapa" style="min-height:100vh; flex-direction:column; gap:2rem;">
+
+    <p class="mapa-eyebrow texto-narrativo" id="mapaEyebrow">
+      No todos los países enfrentan el mismo entorno alimentario.
+    </p>
+
+    <div id="mapaContenedor" style="width:100%; max-width:960px; position:relative;">
+      <svg id="mapaSvg" viewBox="0 0 960 560" style="width:100%;display:block;"></svg>
+      <!-- tooltip -->
+      <div id="mapaTooltip" style="
+        position:absolute; pointer-events:none; display:none;
+        background:#111; border:1px solid #2a2a2a; border-radius:4px;
+        padding:0.6rem 1rem; font-size:0.78rem; color:var(--blanco);
+        white-space:nowrap; z-index:10;
+      "></div>
+    </div>
+
+    <p class="mapa-leyenda texto-descriptivo" id="mapaLeyenda">
+      Se muestran países representativos de distintas regiones del mundo. </br>
+      El tamaño de cada círculo es proporcional a su tasa de obesidad.
+    </p>
+
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ACTO III — EL TIEMPO (RELOJ)
+  ══════════════════════════════════════ -->
+
+  <section class="pantalla" id="p8">
+    <div class="reloj-container">
+      <div class="reloj-digital" id="reloj">07:00</div>
+      <p class="reloj-frase texto-narrativo" id="relojFrase1">
+        Cuando <span class="enfasis">cada minuto importa...</span>
+      </p>
+      <p class="reloj-frase texto-narrativo" id="relojFrase2" style="margin-top:1rem;">
+        ...preparar una comida deja de ser<br />
+        <span class="enfasis">una decisión tan simple.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ACTO III — PRECIO
+  ══════════════════════════════════════ -->
+
+<section class="pantalla" id="p9">
+
+  <p class="precio-titulo texto-narrativo" id="precioTitulo">
+    Dos opciones. Un mismo momento.
+  </p>
+
+  <div class="precio-comparativa">
+    <div class="precio-columna" id="columna1">
+
+        <div class="precio-encabezado">
+            <span class="precio-opcion">OPCIÓN A</span>
+            <h3>Comida casera</h3>
+        </div>
+
+        <div class="precio-card" id="card1">
+
+            <img
+                src="imagenes/comida-casera.png"
+                alt="Comida casera"
+                class="precio-imagen"
+            />
+
+            <div class="precio-info">
+                <p>Carne con papas y ensalada.</p>
+                <p>Tiempo de preparación: 45 min</p>
+                <p>Necesitas comprar y cocinar.</p>
+            </div>
+
+            <div class="precio-card-valor">$10–14</div>
+
+        </div>
+
+    </div>
+
+    <div class="precio-columna" id="columna2">
+
+        <div class="precio-encabezado">
+            <span class="precio-opcion">OPCIÓN B</span>
+            <h3>Comida rápida</h3>
+        </div>
+
+        <div class="precio-card destacado" id="card2">
+
+            <img
+                src="imagenes/comida-rapida.webp"
+                alt="Comida rápida"
+                class="precio-imagen"
+            />
+
+            <div class="precio-info">
+                <p>Hamburguesa con papas y bebida.</p>
+                <p>Tiempo de espera: 5 min</p>
+                <p>Esta a solo dos cuadras de tu casa.</p>
+            </div>
+
+            <div class="precio-card-valor">$6–9</div>
+
+        </div>
+
+    </div>
+
+  </div>
+
+  <p class="precio-nota texto-narrativo" id="precioNota1" style="margin-top:3rem;">
+        El <span class="enfasis">precio</span> también influye en nuetras <span class="enfasis"> decisiones</span>. <br />
+      </p>
+      <p class="precio-nota texto-narrativo" id="precioNota2" style="margin-top:3rem;">
+        Y no siempre la opción más accesible es la más
+        <span class="enfasis">saludable.</span>
+  </p>
+
+</section>
+
+  <!-- ══════════════════════════════════════
+       ACTO III — LA DECISIÓN (interactivo)
+  ══════════════════════════════════════ -->
+  <section class="pantalla" id="p-decision" style="min-height:100vh;">
+ 
+    <div class="decision-contenedor" id="decisionContenedor">
+ 
+      <p class="decision-eyebrow" id="decisionEyebrow">
+        Pongámoslo en práctica.
+      </p>
+ 
+      <!-- ── Situación 1 ── -->
+      <div class="decision-situacion activa" id="situacion-1" data-paso="1">
+        <p class="decision-texto texto-descriptivo">
+          Estás en tu casa. Es fin de semana, tenés tiempo y todos los ingredientes necesarios.
+        </p>
+        <div class="decision-opciones">
+          <button class="decision-btn btn-casera" onclick="elegirOpcion(1, 'casera')">
+            🥗 Comida casera
+          </button>
+          <button class="decision-btn btn-rapida" onclick="elegirOpcion(1, 'rapida')">
+            🍔 Comida rápida
+          </button>
+        </div>
+        <p class="decision-feedback" id="feedback-1"></p>
+      </div>
+ 
+      <!-- ── Situación 2 ── -->
+      <div class="decision-situacion" id="situacion-2" data-paso="2">
+        <p class="decision-texto texto-descriptivo">
+          Ahora es lunes. Te despertaste tarde y tenés que llegar al trabajo. Tenés poco tiempo para preparar algo.
+        </p>
+        <div class="decision-opciones">
+          <button class="decision-btn btn-casera" onclick="elegirOpcion(2, 'casera')">
+            🥗 Comida casera
+          </button>
+          <button class="decision-btn btn-rapida" onclick="elegirOpcion(2, 'rapida')">
+            🍔 Comida rápida
+          </button>
+        </div>
+        <p class="decision-feedback" id="feedback-2"></p>
+      </div>
+ 
+      <!-- ── Situación 3 ── -->
+      <div class="decision-situacion" id="situacion-3" data-paso="3">
+        <p class="decision-texto texto-descriptivo">
+          Camino al trabajo encontrás varias cadenas de comida rápida con promociones visibles.
+          La opción saludable más cercana requiere más tiempo y desplazamiento.
+        </p>
+        <div class="decision-opciones">
+          <button class="decision-btn btn-casera" onclick="elegirOpcion(3, 'casera')">
+            🥗 Comida saludable
+          </button>
+          <button class="decision-btn btn-rapida" onclick="elegirOpcion(3, 'rapida')">
+            🍔 Comida rápida
+          </button>
+        </div>
+        <p class="decision-feedback" id="feedback-3"></p>
+      </div>
+ 
+      <!-- ── Transición final (se muestra siempre, al terminar el recorrido) ── -->
+      <div class="decision-transicion" id="decisionTransicion">
+        <p class="decision-transicion-texto texto-descriptivo" id="decisionTransicionTexto">
+          Hace unos momentos tomaste una decisión alimentaria.<br/>
+          Pero, ¿qué ocurre cuando las opciones más rápidas, visibles y accesibles
+          están presentes en <span class="enfasis">casi todas partes</span>?
+        </p>
+        <p class="decision-transicion-sub">
+          Para entenderlo, veamos cómo las cadenas de comida rápida se expandieron por Estados Unidos.
+        </p>
+
+      </div>
+ 
+    </div>
+ 
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ACTO IV — EXPANSIÓN DE LA COMIDA RÁPIDA
+       (sticky scrollytelling: el mapa queda fijo,
+        el scroll controla qué etapa se muestra)
+  ══════════════════════════════════════ -->
+  <section id="p-locales" class="expansion-section">
+ 
+    <div class="expansion-sticky-wrap" id="expansionStickyWrap">
+ 
+      <div class="expansion-escenario">
+ 
+        <!-- Mapa fijo -->
+        <div class="expansion-mapa-contenedor">
+          <svg id="localesSvg" viewBox="0 0 900 560"></svg>
+          <p class="expansion-contador" id="expansionContador">0 locales</p>
+        </div>
+ 
+      </div>
+ 
+      <!-- Tarjetas de texto: alternan lado derecho/izquierdo, recorren toda la pantalla -->
+      <div class="expansion-tarjeta-wrap">
+        <div class="expansion-tarjeta lado-derecha pendiente" id="tarjeta-1" data-paso="1">
+          <span class="expansion-tarjeta-decada">1950</span>
+          <p>En la década de 1950 comenzaron a surgir las primeras grandes cadenas de comida rápida. Su propuesta era simple: comida rápida, económica y estandarizada.</p>
+        </div>
+        <div class="expansion-tarjeta lado-izquierda pendiente" id="tarjeta-2" data-paso="2">
+          <span class="expansion-tarjeta-decada">1960–1970</span>
+          <p>Lo que comenzó como un fenómeno local empezó a expandirse hacia otras ciudades y estados. Cada nueva apertura acercaba estas opciones a más personas.</p>
+        </div>
+        <div class="expansion-tarjeta lado-derecha pendiente" id="tarjeta-3" data-paso="3">
+          <span class="expansion-tarjeta-decada">1980–1990</span>
+          <p>Durante las décadas siguientes, miles de nuevos locales fueron abiertos en todo el país. Las cadenas dejaron de ser una novedad para convertirse en parte de la vida cotidiana.</p>
+        </div>
+        <div class="expansion-tarjeta lado-izquierda pendiente" id="tarjeta-4" data-paso="4">
+          <span class="expansion-tarjeta-decada">2000</span>
+          <p>La expansión no ocurrió únicamente en grandes ciudades. Estas cadenas llegaron también a barrios residenciales, rutas y centros comerciales.</p>
+        </div>
+        <div class="expansion-tarjeta lado-derecha pendiente" id="tarjeta-5" data-paso="5">
+          <span class="expansion-tarjeta-decada">Actualidad</span>
+          <p>Hoy, millones de personas encuentran opciones de comida rápida a pocos minutos de distancia. La accesibilidad ya no es una característica secundaria: forma parte del entorno.</p>
+        </div>
+      </div>
+ 
+      <!-- indicador de progreso -->
+      <div class="expansion-progreso" id="expansionProgreso">
+        <span class="expansion-paso-dot" data-paso="1"></span>
+        <span class="expansion-paso-dot" data-paso="2"></span>
+        <span class="expansion-paso-dot" data-paso="3"></span>
+        <span class="expansion-paso-dot" data-paso="4"></span>
+        <span class="expansion-paso-dot" data-paso="5"></span>
+      </div>
+ 
+    </div>
+ 
+    <!-- espacio de scroll: cada "página" de alto recorre una etapa -->
+    <div class="expansion-scroll-espaciador" id="expansionScrollEspaciador"></div>
+ 
+  </section>
+ 
+  <!-- ══════════════════════════════════════
+       ACTO IV.5 — TRANSICIÓN FINAL
+  ══════════════════════════════════════ -->
+  <section class="pantalla" id="p-expansion-cierre">
+    <p class="expansion-cierre-texto texto-narrativo" id="expansionCierreTexto">
+      Cuando una opción está presente prácticamente en todas partes,
+      deja de ser solo una elección individual.<br/>
+      <span class="enfasis">
+        También pasa a formar parte del contexto que influye en 
+        nuestras decisiones diarias.
+      </span>
+    </p>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ACTO V — LAS MARCAS DEL DÍA A DÍA
+  ══════════════════════════════════════ -->
+  <section class="pantalla" id="p-franquicias" style="min-height:100vh; gap:3rem;">
+    <p class="franq-intro" id="franqIntro">
+      Estas marcas forman parte del paisaje cotidiano de millones de personas.<br />
+      <span>¿Seguís pensando que la decisión depende únicamente de la voluntad?</span>
+    </p>
+    <p class="franq-subtitulo" id="franqSub">Empecemos por una de ellas.</p>
+    <div class="franq-tarjetas" id="franqTarjetas">
+      <div class="franq-card franq-card-activa">
+        <span class="franq-emoji">🍔</span>
+        <span class="franq-nombre">McDonald's</span>
+      </div>
+      <div class="franq-card franq-card-proximamente">
+        <span class="franq-emoji">🍗</span>
+        <span class="franq-nombre">KFC</span>
+      </div>
+      <div class="franq-card franq-card-proximamente">
+        <span class="franq-emoji">🌮</span>
+        <span class="franq-nombre">Taco Bell</span>
+      </div>
+      <div class="franq-card franq-card-proximamente">
+        <span class="franq-emoji">🍕</span>
+        <span class="franq-nombre">Pizza Hut</span>
+      </div>
+      <div class="franq-card franq-card-proximamente">
+        <span class="franq-emoji">🍩</span>
+        <span class="franq-nombre">Dunkin'</span>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ══════════════════════════════════════
+       ACTO VI — UN COMBO, POR DENTRO
+       (scrollytelling de McDonald's: Big Mac + papas + bebida)
+  ══════════════════════════════════════ -->
+  <section id="p-combo" class="combo-section">
+ 
+    <div class="combo-sticky-wrap" id="comboStickyWrap">
+ 
+      <!-- ══ Composición visual del combo (siempre presente, cambia de estado) ══ -->
+      <div class="combo-visual" id="comboVisual">
+ 
+        <!--
+          ════════════════════════════════════════════════════════
+          📌 ACÁ VAN TUS 3 FOTOS — reemplazá el atributo src="" de
+          cada <img> de abajo por la ruta a tu archivo.
+ 
+          Ejemplo: si tu foto se llama "hamburguesa.jpg" y la pusiste
+          en la misma carpeta que index.html, dejá:
+          src="hamburguesa.jpg"
+ 
+          Si las guardaste en una subcarpeta llamada "imagenes/", sería:
+          src="imagenes/hamburguesa.jpg"
+          ════════════════════════════════════════════════════════
+        -->
+ 
+        <img
+          id="imgHamburguesa"
+          class="combo-img combo-img-hamburguesa"
+          src="imagenes/hamburguesa-mac.png"
+          alt="Big Mac"
+        />
+ 
+        <img
+          id="imgPapas"
+          class="combo-img combo-img-papas"
+          src="imagenes/papas-mac.png"
+          alt="Papas fritas medianas"
+        />
+ 
+        <img
+          id="imgBebida"
+          class="combo-img combo-img-bebida"
+          src="imagenes/bebida-mac.png"
+          alt="Coca-Cola"
+        />
+
+        <!--
+           ACÁ VA TU FOTO DEL COMBO UNIFICADO ...
+        -->
+        <img
+          id="imgComboUnificado"
+          class="combo-img-unificado"
+          src="imagenes/combo-mac.png"
+          alt="Combo completo de McDonald's"
+        />
+                
+        <!-- flechas que apuntan al elemento destacado en cada escena -->
+        <svg id="flechaHamburguesa" class="combo-flecha" viewBox="0 0 100 100"><path d="M50 90 L50 10 M30 30 L50 10 L70 30" stroke="var(--acento)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg id="flechaPapas" class="combo-flecha" viewBox="0 0 100 100"><path d="M50 90 L50 10 M30 30 L50 10 L70 30" stroke="var(--acento)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg id="flechaBebida" class="combo-flecha" viewBox="0 0 100 100"><path d="M50 90 L50 10 M30 30 L50 10 L70 30" stroke="var(--acento)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+ 
+      </div>
+ 
+      <!-- ══ Capa de texto: cambia según la escena, controlada por scroll ══ -->
+      <div class="combo-texto-capa">
+ 
+        <!-- Escena 1 -->
+        <div class="combo-escena" id="escena-1" data-escena="1">
+          <p class="combo-escena-texto">Un almuerzo común.</p>
+        </div>
+ 
+        <!-- Escena 2 -->
+        <div class="combo-escena" id="escena-2" data-escena="2">
+          <span class="combo-escena-label">Hamburguesa</span>
+          <p class="combo-escena-cifra">505 <span>calorías</span></p>
+        </div>
+ 
+        <!-- Escena 3 -->
+        <div class="combo-escena" id="escena-3" data-escena="3">
+          <span class="combo-escena-label">Papas fritas</span>
+          <p class="combo-escena-cifra">292 <span>calorías</span></p>
+        </div>
+ 
+        <!-- Escena 4 -->
+        <div class="combo-escena" id="escena-4" data-escena="4">
+          <span class="combo-escena-label">Bebida</span>
+          <p class="combo-escena-cifra">269 <span>calorías</span></p>
+        </div>
+ 
+        <!-- Escena 5: total -->
+        <div class="combo-escena" id="escena-5" data-escena="5">
+          <span class="combo-escena-label">Total del combo</span>
+          <p class="combo-escena-cifra combo-escena-cifra-total">1.066 <span>calorías</span></p>
+        </div>
+ 
+        <!-- Escena 6: contexto -->
+        <div class="combo-escena" id="escena-6" data-escena="6">
+          <p class="combo-escena-contexto">
+            Esto representa aproximadamente <span id="pctDiario">53</span>%
+            de la ingesta calórica diaria recomendada para un adulto.
+          </p>
+        </div>
+ 
+        <!-- Escena 7: equivalencia visual (kilómetros caminados para quemarlo) -->
+        <div class="combo-escena combo-escena-equivalencia" id="escena-7" data-escena="7">
+          <p class="combo-escena-equivalencia-titulo">
+            Para sentirlo de otra forma:
+          </p>
+          <p class="km-cifra-grande"><span id="cantKm">0</span> km</p>
+          <div class="km-ruta-barra">
+            <div class="km-ruta-progreso" id="kmRutaProgreso"></div>
+            <span class="km-ruta-icono" id="kmRutaIcono">🚶‍♂️‍➡️</span>
+          </div>
+          <p class="combo-escena-equivalencia-sub">
+            caminando, para quemar las calorías de este combo
+          </p>
+        </div>
+ 
+      </div>
+ 
+    </div>
+ 
+    <!-- espacio de scroll que alimenta las 7 escenas -->
+    <div class="combo-scroll-espaciador" id="comboScrollEspaciador"></div>
+ 
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ACTO VII — REFLEXIÓN FINAL
+  ══════════════════════════════════════ -->
+
+  <section id="p-cierre">
+
+    <div class="cierre-lista">
+      <p class="cierre-frase" id="cf1">Vimos estadísticas.</p>
+      <p class="cierre-frase" id="cf2">Vimos precios.</p>
+      <p class="cierre-frase" id="cf3">Vimos disponibilidad.</p>
+      <p class="cierre-frase" id="cf4">Vimos publicidad.</p>
+      <p class="cierre-frase" id="cf5">Vimos miles de locales.</p>
+
+      <div class="cierre-separador" id="cierreSep"></div>
+
+      <p class="pregunta-final" id="preguntaFinal">
+        ¿Qué pasa cuando todo el sistema hace que<br />
+        una opción sea siempre la más fácil?
+      </p>
+
+      <p class="reflexion-final" id="reflexionFinal">
+        El entorno no toma decisiones por nosotros.<br />
+        Pero sí puede hacer que
+        <span>algunas decisiones sean mucho más fáciles que otras.</span>
+      </p>
+
+      <p class="cierre-firma" id="cierreFirma">
+        Comprender el problema es el primer paso para empezar a transformarlo.
+      </p>
+    </div>
+
+  </section>
+
+  <!--
+═══════════════════════════════════════════════════════════════
+  ARCHIVOS JAVASCRIPT
+
+  Cada archivo tiene una responsabilidad específica.
+
+  animaciones.js
+  → animaciones generales del proyecto.
+
+  mapa-mundial.js
+  → lógica del mapa mundial.
+
+  mapa-locales.js
+  → expansión de los locales.
+
+  datos-nutricionales.js
+  → cálculos y datos del combo.
+
+  animacion-tarjetas.js
+  → efectos de las tarjetas.
+═══════════════════════════════════════════════════════════════
+-->
+  <script src="js/animaciones.js"></script>
+  <script src="js/datos-nutricionales.js"></script>
+  <script src="js/animacion-tarjetas.js"></script>
+  <script src="js/mapa-mundial.js"></script>
+  <script src="js/mapa-locales.js"></script>
+
+  
+</body>
+</html>
